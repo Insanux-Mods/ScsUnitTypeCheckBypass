@@ -28,7 +28,7 @@ void cleanup()
     const auto jmp = reinterpret_cast<uint16_t*>(g_attribute_type_check_address);
     *jmp = 0x840F;
     VirtualProtect(reinterpret_cast<LPVOID>(g_attribute_type_check_address), 2, old_acc_protect, nullptr);
-    scs_log(SCS_LOG_TYPE_message, "[ScsUnitTypeCheckIgnore] Unpatched Attribute Type Check");
+    scs_log(SCS_LOG_TYPE_message, "[ScsUnitTypeCheckBypass v1.0.1] Unpatched Attribute Type Check");
 }
 
 bool bypass_type_check()
@@ -43,7 +43,7 @@ bool bypass_type_check()
     const auto je = reinterpret_cast<uint16_t*>(g_attribute_type_check_address);
     *je = 0xE990;
     VirtualProtect(reinterpret_cast<LPVOID>(g_attribute_type_check_address), 2, old_acc_protect, nullptr);
-    scs_log(SCS_LOG_TYPE_message, "[ScsUnitTypeCheckIgnore] Patched Attribute Type Check");
+    scs_log(SCS_LOG_TYPE_message, "[ScsUnitTypeCheckBypass v1.0.1] Patched Attribute Type Check");
     return true;
 }
 
@@ -59,7 +59,7 @@ SCSAPI_RESULT scs_telemetry_init(const scs_u32_t version, const scs_telemetry_in
     scs_log = version_params->common.log;
 
     std::stringstream ss;
-    ss << "[ScsUnitTypeCheckIgnore] Found type check jump address @ &" << std::hex <<
+    ss << "[ScsUnitTypeCheckBypass v1.0.1] Found type check jump address @ &" << std::hex <<
         g_attribute_type_check_address << " "
         << (strcmp(version_params->common.game_id, "eut2") == 0 ? "eurotrucks2" : "amtrucks") << ".exe+"
         << (g_attribute_type_check_address - game_base);
@@ -68,11 +68,11 @@ SCSAPI_RESULT scs_telemetry_init(const scs_u32_t version, const scs_telemetry_in
     if (!bypass_type_check())
     {
         version_params->common.log(SCS_LOG_TYPE_error,
-                                   "[ScsUnitTypeCheckIgnore] Could not bypass attribute type check");
+                                   "[ScsUnitTypeCheckBypass v1.0.1] Could not bypass attribute type check");
         return SCS_RESULT_invalid_parameter;
     }
 
-    scs_log(SCS_LOG_TYPE_message, "[ScsUnitTypeCheckIgnore] Plugin Loaded");
+    scs_log(SCS_LOG_TYPE_message, "[ScsUnitTypeCheckBypass v1.0.1] Plugin Loaded");
 
     return SCS_RESULT_ok;
 }
@@ -97,8 +97,8 @@ BOOL __stdcall DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
         const auto nt_header = reinterpret_cast<const IMAGE_NT_HEADERS64*>(reinterpret_cast<const uint8_t*>(header) + header->e_lfanew);
         const auto total_size = nt_header->OptionalHeader.SizeOfImage;
 
-        g_attribute_type_check_address = pattern::scan("0F 84 ? ? ? ? 8B 53 0C 48 8D 4D E8 4C 89 65 F8", game_base,
-                                                       total_size);
+        g_attribute_type_check_address = pattern::scan("E8 ?? ?? ?? ?? 85 C0 0F 84 ?? ?? ?? ?? 8B 53", game_base,
+                                                       total_size) + 7;
     }
 
     return TRUE;
