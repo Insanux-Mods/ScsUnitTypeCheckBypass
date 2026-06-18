@@ -1,8 +1,8 @@
-<h1 align="center">ScsUnitTypeCheckIgnore</h1>
-<p align="center"><b>Bypass ETS2 / ATS Attribute Type Check (SCSUnitTypeCheck)</b></p>
+<h1 align="center">ScsUnitTypeCheckBypass</h1>
+<p align="center"><b>Bypass ETS2 / ATS Attribute Type Check (SCSUnitTypeBypass)</b></p>
 
 <p align="center">
-    <a href="https://modsfire.com/UYSPa1ft7d2q65U">
+    <a href="https://dl.insanux.com/?mod=bT83Y7fvzbYKePD">
         <img alt="Download" src="https://img.shields.io/badge/Download-Here-blue?style=for-the-badge">
     </a>
 </p>
